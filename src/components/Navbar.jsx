@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, RotateCcw, Download, Volume2, VolumeX, Sun, Moon, Info } from 'lucide-react';
+import { Play, Download, Volume2, VolumeX, Sun, Moon, Info } from 'lucide-react'; // Removed RotateCcw import
 
 const LOGO_URL = "/image_28cbac.png"; 
 
@@ -39,27 +39,27 @@ export default function Navbar({ startTour, resetGame, isMuted, toggleMute, isDa
               {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
             </button>
 
-            <button 
-              onClick={resetGame} 
-              className={`p-2 rounded-full transition border ${isDark ? 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white' : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'}`}
-            >
-              <RotateCcw size={18} />
-            </button>
-
+            {/* --- RESUME BUTTON --- */}
             <a 
               href="/resume.pdf" 
               download 
               target="_blank"
-              className={`hidden md:flex px-4 py-2 rounded-full font-bold items-center gap-2 text-xs border transition ${isDark ? 'bg-slate-800 text-white border-slate-600 hover:bg-slate-700' : 'bg-slate-100 text-slate-800 border-slate-300 hover:bg-slate-200'}`}
+              className={`
+                flex items-center justify-center gap-2 border transition font-bold
+                p-2 rounded-full md:px-4 md:py-2 md:text-xs 
+                ${isDark ? 'bg-slate-800 text-white border-slate-600 hover:bg-slate-700' : 'bg-slate-100 text-slate-800 border-slate-300 hover:bg-slate-200'}
+              `}
+              title="Download Resume"
             >
-              <Download size={14} /> Resume
+              <Download size={18} className="md:w-3.5 md:h-3.5" /> 
+              <span className="hidden md:inline">Resume</span>
             </a>
 
             <button 
               onClick={startTour} 
-              className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-full font-bold flex items-center gap-2 text-xs shadow-lg hover:shadow-blue-500/30 hover:scale-105 transition"
+              className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 md:px-4 md:py-2 rounded-full font-bold flex items-center gap-2 text-[10px] md:text-xs shadow-lg hover:shadow-blue-500/30 hover:scale-105 transition whitespace-nowrap"
             >
-              <Play size={14} fill="currentColor" /> QUICK TOUR
+              <Play size={14} fill="currentColor" /> <span className="hidden md:inline">QUICK TOUR</span><span className="md:hidden">TOUR</span>
             </button>
           </div>
         </nav>

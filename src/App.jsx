@@ -30,7 +30,7 @@ export default function App() {
     if (link) { link.href = '/image_28cbac.png'; }
 
     setTimeout(() => {
-      speak("Hello World! I am Anshu. Welcome to my portfolio game.");
+      speak("Hello Namastae! I am Anshu. Welcome to my portfolio game.");
     }, 1000);
   }, []);
 
