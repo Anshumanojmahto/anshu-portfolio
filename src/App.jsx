@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Popup from './components/Popup';
 import Sidebar from './components/Sidebar';
 import Dice3D from './components/Dice3D'; 
+// REMOVED: import VoiceTester ... (Not needed for final app)
 import { SECTIONS, LUDO_PATH } from './constants';
 import { speak as aiSpeak } from './utils/voiceAgent';
 import confetti from 'canvas-confetti';
@@ -15,7 +16,7 @@ export default function App() {
   const [isRolling, setIsRolling] = useState(false);
   const [isTouring, setIsTouring] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [isDark, setIsDark] = useState(true); // Default to Dark Mode
+  const [isDark, setIsDark] = useState(true); 
   
   const audioRef = useRef(new Audio('https://assets.mixkit.co/active_storage/sfx/2578/2578-preview.mp3'));
 
@@ -81,7 +82,6 @@ export default function App() {
     setIsRolling(false); 
 
     await new Promise(r => setTimeout(r, 800));
-
     await moveToken(Math.min(finalD1 + finalD2, distanceToNext));
   };
 
@@ -164,11 +164,12 @@ export default function App() {
   };
 
   return (
-    <div className={`h-screen w-screen flex flex-col relative overflow-hidden font-sans transition-colors duration-500 ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
+    <div className={`h-[100dvh] w-screen flex flex-col relative overflow-hidden font-sans transition-colors duration-500 ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
       
-      {/* Background Gradient - Switching based on theme */}
+      {/* Background Gradient */}
       <div className={`absolute inset-0 z-0 transition-opacity duration-500 ${isDark ? 'opacity-100 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black' : 'opacity-100 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-100 via-slate-200 to-white'}`}></div>
 
+      {/* 1. TOP NAVBAR */}
       <Navbar 
         startTour={runTour} 
         resetGame={resetGame} 
@@ -178,15 +179,16 @@ export default function App() {
         toggleTheme={() => setIsDark(!isDark)}
       />
 
-      <div className="flex-1 flex flex-col md:flex-row items-center justify-between w-full h-full p-2 md:p-6 gap-4 relative z-10 overflow-y-auto md:overflow-visible">
+      {/* 2. MAIN LAYOUT AREA */}
+      <div className="flex-1 flex flex-col md:flex-row items-center md:items-start justify-center w-full h-full relative z-10 overflow-hidden">
         
-        {/* Left Sidebar */}
-        <div className="w-full md:w-64 flex justify-start order-2 md:order-1 px-4 md:px-0">
+        {/* Sidebar (Desktop Only) */}
+        <div className="hidden md:flex md:w-64 h-full justify-start order-2 md:order-1 p-6">
            <Sidebar isDark={isDark} />
         </div>
 
-        {/* Center Board */}
-        <div className="flex-1 flex justify-center order-1 md:order-2">
+        {/* Board Area */}
+        <div className="flex-1 flex items-center justify-center w-full h-full order-1 md:order-2 p-2 pb-0 md:p-6">
            <Board 
              tile={tile} 
              onHomeClick={(color) => !isTouring && setPopupSection(SECTIONS[color].id)} 
@@ -196,21 +198,25 @@ export default function App() {
            />
         </div>
 
-        {/* Right Dice */}
-        <div className="w-full md:w-64 flex flex-col items-center justify-end md:justify-end gap-4 mb-4 md:mb-0 order-3 md:order-3">
-            <button onClick={resetGame} className={`text-xs underline decoration-slate-700 underline-offset-4 transition ${isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-black'}`}>Reset Board</button>
+        {/* Dice Controls */}
+        <div className="w-full md:w-64 flex flex-col items-center justify-end p-4 md:p-6 order-3 md:order-3 gap-2 md:gap-4 bg-gradient-to-t from-black/20 to-transparent md:bg-none">
+            
+            <button onClick={resetGame} className={`hidden md:block text-xs underline decoration-slate-700 underline-offset-4 transition ${isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-black'}`}>Reset Board</button>
 
-            <div className={`backdrop-blur-xl p-6 rounded-2xl border shadow-2xl flex flex-col items-center gap-6 w-full max-w-[280px] transition-colors duration-300 ${isDark ? 'bg-slate-800/40 border-white/5' : 'bg-white/40 border-black/5'}`}>
-                <div className="flex gap-6 justify-center">
+            <div className={`
+                backdrop-blur-xl p-3 md:p-6 rounded-2xl border shadow-2xl flex flex-row md:flex-col items-center gap-4 md:gap-6 w-full max-w-[400px] md:max-w-[280px] transition-colors duration-300 mx-auto
+                ${isDark ? 'bg-slate-800/80 md:bg-slate-800/40 border-white/10' : 'bg-white/80 md:bg-white/40 border-black/5'}
+            `}>
+                <div className="flex gap-4 md:gap-6 justify-center scale-75 md:scale-100">
                     <Dice3D value={diceValues.d1} rolling={isRolling} />
                     <Dice3D value={diceValues.d2} rolling={isRolling} />
                 </div>
                 <button 
                     onClick={rollDice}
                     disabled={isRolling || isTouring || tile >= 57}
-                    className="w-full py-3 bg-gradient-to-r from-yellow-500 to-orange-600 text-white font-black tracking-widest rounded-xl shadow-lg hover:shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition disabled:opacity-50 disabled:grayscale"
+                    className="flex-1 w-full py-2 md:py-3 bg-gradient-to-r from-yellow-500 to-orange-600 text-white font-black text-sm md:text-base tracking-widest rounded-xl shadow-lg hover:shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition disabled:opacity-50 disabled:grayscale whitespace-nowrap"
                 >
-                    {isRolling ? "ROLLING..." : (tile >= 57 ? "GOAL REACHED" : "ROLL DICE")}
+                    {isRolling ? "ROLLING..." : (tile >= 57 ? "GOAL!" : "ROLL DICE")}
                 </button>
             </div>
         </div>
